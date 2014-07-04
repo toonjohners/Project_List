@@ -1,0 +1,117 @@
+[root@cpsesrhelcontrol ~]# ADMIN_TOKEN=$(openssl rand -hex 10)
+[root@cpsesrhelcontrol ~]# echo $ADMIN_TOKEN
+04c72ed66bf82327d3ac
+[root@cpsesrhelcontrol ~]# export OS_SERVICE_TOKEN=$ADMIN_TOKEN
+[root@cpsesrhelcontrol ~]# export OS_SERVICE_ENDPOINT=http://controller:35357/v2                                                                                        .0
+[root@cpsesrhelcontrol ~]# echo $OS_SERVICE_TOKEN
+04c72ed66bf82327d3ac
+[root@cpsesrhelcontrol ~]# keystone user-create --name=admin --pass=timtam --ema                                                                                        il=jmccormack@openet.com
+Invalid OpenStack Identity credentials.
+[root@cpsesrhelcontrol ~]# keystone user-create --name=admin --pass=timtam --ema                                                                                        il=jmccormack@openet.com
+Invalid OpenStack Identity credentials.
+[root@cpsesrhelcontrol ~]# openstack-config --set /etc/keystone/keystone.conf DE                                                                                        FAULT \
+>    admin_token $ADMIN_TOKEN
+[root@cpsesrhelcontrol ~]# keystone user-create --name=admin --pass=timtam --ema                                                                                        il=jmccormack@openet.com
+Invalid OpenStack Identity credentials.
+[root@cpsesrhelcontrol ~]# vi openstack-config --set /etc/keystone/keystone.conf                                                                                         DEFAULT \
+> keystone user-create --name=admin --pass=timtam --email=jmccormack@openet.com
+VIM - Vi IMproved 7.2 (2008 Aug 9, compiled Feb 17 2012 10:24:10)
+Unknown option argument: "--set"
+More info with: "vim -h"
+[root@cpsesrhelcontrol ~]# vi /etc/keystone/keystone.conf
+[root@cpsesrhelcontrol ~]# service openstack-keystone restart
+Stopping keystone:                                         [  OK  ]
+Starting keystone:                                         [  OK  ]
+[root@cpsesrhelcontrol ~]# keystone user-create --name=admin --pass=timtam --ema                                                                                        il=jmccormack@openet.com
++----------+----------------------------------+
+| Property |              Value               |
++----------+----------------------------------+
+|  email   |      jmccormack@openet.com       |
+| enabled  |               True               |
+|    id    | 80bf46e1db234ee791af67f87618dc21 |
+|   name   |              admin               |
+| username |              admin               |
++----------+----------------------------------+
+[root@cpsesrhelcontrol ~]# keystone role-create --name=admin
++----------+----------------------------------+
+| Property |              Value               |
++----------+----------------------------------+
+|    id    | 7f567d5d9e914d41b332142d98c9f2bc |
+|   name   |              admin               |
++----------+----------------------------------+
+[root@cpsesrhelcontrol ~]# keystone tenant-create --name=admin --description="Admin Tenant"
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |           Admin Tenant           |
+|   enabled   |               True               |
+|      id     | f75ffb534a4047b4a652e640fcd55004 |
+|     name    |              admin               |
++-------------+----------------------------------+
+[root@cpsesrhelcontrol ~]# keystone user-role-add --user=admin --tenant=admin --role=admin
+[root@cpsesrhelcontrol ~]# keystone user-role-add --user=admin --role=_member_ --tenant=admin
+
+[root@cpsesrhelcontrol ~]# keystone user-create --name=demo --pass=timtam --email=jmccormack@openet.com
++----------+----------------------------------+
+| Property |              Value               |
++----------+----------------------------------+
+|  email   |      jmccormack@openet.com       |
+| enabled  |               True               |
+|    id    | 136178872d194ed3a32ddbe24b9cfad5 |
+|   name   |               demo               |
+| username |               demo               |
++----------+----------------------------------+
+[root@cpsesrhelcontrol ~]# keystone tenant-create --name=demo --description="Demo Tenant"
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |           Demo Tenant            |
+|   enabled   |               True               |
+|      id     | c0f49162b1d246b8bb58c85d4cfec141 |
+|     name    |               demo               |
++-------------+----------------------------------+
+[root@cpsesrhelcontrol ~]# keystone user-role-add --user=demo --role=_member_ --tenant=demo
+[root@cpsesrhelcontrol ~]# keystone tenant-create --name=service --description="Service Tenant"
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |          Service Tenant          |
+|   enabled   |               True               |
+|      id     | 7d40766723214edab364b21112f3ef7a |
+|     name    |             service              |
++-------------+----------------------------------+
+[root@cpsesrhelcontrol ~]# keystone service-create --name=keystone --type=identity \
+>   --description="OpenStack Identity"
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |        OpenStack Identity        |
+|   enabled   |               True               |
+|      id     | 070c171c463b41c78054ed28591cedf2 |
+|     name    |             keystone             |
+|     type    |             identity             |
++-------------+----------------------------------+
+[root@cpsesrhelcontrol ~]# keystone service-create --name=keystone --type=identity \
+>   --description="OpenStack Identity"
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |        OpenStack Identity        |
+|   enabled   |               True               |
+|      id     | f7745151bf0a47d3bb562db974c88b58 |
+|     name    |             keystone             |
+|     type    |             identity             |
++-------------+----------------------------------+
+
+[root@cpsesrhelcontrol ~]# keystone service-create --name=nova --type=compute --description="Compute Service"
++-------------+----------------------------------+
+|   Property  |              Value               |
++-------------+----------------------------------+
+| description |         Compute Service          |
+|   enabled   |               True               |
+|      id     | db2389a0f581469c97d54ff265f204ff |
+|     name    |               nova               |
+|     type    |             compute              |
++-------------+----------------------------------+
+
+
